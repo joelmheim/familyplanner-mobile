@@ -1,24 +1,27 @@
-import App from './app/index';
+import React from 'react';
+import PropTypes from 'prop-types';
+import { FlatList, ActivityIndicator, View } from 'react-native';
+import { List, ListItem, SearchBar } from 'react-native-elements';
+import personUrl from '../config/config';
 
-export default App;
-
-//import { FlatList, ActivityIndicator, Text, View, StyleSheet, ToolbarAndroid } from 'react-native';
-//import { List, ListItem, SearchBar } from "react-native-elements";
-
-/*
-export default class App extends React.Component {
-
-  constructor(props){
-    super(props);
-    this.state ={ loading: true}
+export default class Persons extends React.Component {
+  static propTypes = {
+    navigation: PropTypes.shape({
+      navigate: PropTypes.func.isRequired,
+    }).isRequired,
   }
 
-  componentDidMount(){
+  constructor(props) {
+    super(props);
+    this.state ={ loading: true };
+  }
+
+  componentDidMount() {
     this.makeRemoteRequest();
   }
 
-  makeRemoteRequest = () => {
-    const url = 'https://familyplanner-api.herokuapp.com/api/persons';
+  makeRemoteRequest() {
+    const url = personUrl;
     this.setState({ loading: true });
 
     fetch(url)
@@ -32,15 +35,13 @@ export default class App extends React.Component {
       .catch(error => {
         this.setState({ error: error, loading: false });
       });
-  };
-  
-  onActionSelected(position){
-    if (position === 0) { // index of 'Settings'
-      showSettings();
-    }
   }
 
-  handleRefresh = () => {
+  handleListItemPress(item) {
+    this.props.navigation.navigate('Details', { ...item });
+  }
+  
+  handleRefresh() {
     this.setState(
       {
         refreshing: true
@@ -49,26 +50,26 @@ export default class App extends React.Component {
         this.makeRemoteRequest();
       }
     );
-  };
+  }
 
-  renderSeparator = () => {
+  renderSeparator() {
     return (
       <View
         style={{
           height: 1,
-          width: "86%",
-          backgroundColor: "#CED0CE",
-          marginLeft: "14%"
+          width: '86%',
+          backgroundColor: '#CED0CE',
+          marginLeft: '14%'
         }}
       />
     );
-  };
+  }
 
-  renderHeader = () => {
-    return <SearchBar placeholder="Type Here..." lightTheme round />;
-  };
+  renderHeader() {
+    return <SearchBar placeholder='Type Here...' darkTheme round />;
+  }
 
-  renderFooter = () => {
+  renderFooter() {
     if (!this.state.loading) return null;
 
     return (
@@ -76,19 +77,17 @@ export default class App extends React.Component {
         style={{
           paddingVertical: 20,
           borderTopWidth: 1,
-          borderColor: "#CED0CE"
+          borderColor: '#CED0CE'
         }}
       >
-        <ActivityIndicator animating size="large" />
+        <ActivityIndicator animating size='large' />
       </View>
     );
-  };
+  }
 
-  imageUrl = (item) => {
-    return `./resources/${item.image}`;
-  };
+  imageUrl = (item) =>  `./resources/${item.image}`;
 
-  render(){
+  render() {
     return(
       <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
         <FlatList
@@ -100,6 +99,7 @@ export default class App extends React.Component {
               subtitle={item.email}
               avatar={{ uri: item.image }}
               containerStyle={{ borderBottomWidth: 0 }}
+              onPress={() => this.handleListItemPress(item)}
             />
           )}
           keyExtractor={item => item.email}
@@ -114,4 +114,4 @@ export default class App extends React.Component {
       </List>
     );
   }
-};*/
+}
