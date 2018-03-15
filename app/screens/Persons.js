@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FlatList, ActivityIndicator, View } from 'react-native';
 import { List, ListItem, SearchBar } from 'react-native-elements';
-import personUrl from '../config/config';
+import * as config from '../config/config';
 
 export default class Persons extends React.Component {
   static propTypes = {
@@ -13,46 +13,42 @@ export default class Persons extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state ={ loading: true };
+    this.state = { 
+      loading: false,
+      data: [],
+      error: null
+    };
   }
 
   componentDidMount() {
     this.makeRemoteRequest();
   }
 
-  makeRemoteRequest() {
-    const url = personUrl;
+  makeRemoteRequest = () => {
     this.setState({ loading: true });
 
-    fetch(url)
+    fetch(config.personUrl)
       .then(res => res.json())
       .then(res => {
         this.setState({
           loading: false,
           data: res,
+          error: res.error,
         });
       })
       .catch(error => {
-        this.setState({ error: error, loading: false });
+        this.setState({
+          error: error, 
+          loading: false 
+        });
       });
   }
 
-  handleListItemPress(item) {
+  handleListItemPress = (item) => {
     this.props.navigation.navigate('Details', { ...item });
   }
   
-  handleRefresh() {
-    this.setState(
-      {
-        refreshing: true
-      },
-      () => {
-        this.makeRemoteRequest();
-      }
-    );
-  }
-
-  renderSeparator() {
+  renderSeparator = () =>  {
     return (
       <View
         style={{
@@ -65,11 +61,11 @@ export default class Persons extends React.Component {
     );
   }
 
-  renderHeader() {
+  renderHeader = () => {
     return <SearchBar placeholder='Type Here...' darkTheme round />;
   }
 
-  renderFooter() {
+  renderFooter = () => {
     if (!this.state.loading) return null;
 
     return (
@@ -106,10 +102,6 @@ export default class Persons extends React.Component {
           ItemSeparatorComponent={this.renderSeparator}
           ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
-          onRefresh={this.handleRefresh}
-          refreshing={this.state.loading}
-          onEndReached={this.handleLoadMore}
-          onEndReachedThreshold={50}
         />
       </List>
     );

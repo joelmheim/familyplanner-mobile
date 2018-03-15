@@ -15,7 +15,7 @@ export const PersonStack = StackNavigator({
   Details: {
     screen: PersonDetails,
     navigationOptions: ({ navigation }) => ({
-      title: navigation.state.params.person.name,
+      title: navigation.state.params.name,
     }),
   },
 });
