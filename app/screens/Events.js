@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Button, FlatList, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, Button, FlatList, ActivityIndicator, View } from 'react-native';
 import { List, ListItem, SearchBar } from 'react-native-elements';
 import dateformat from 'dateformat';
 import * as config from '../config/config';
@@ -72,9 +72,10 @@ export default class Events extends React.Component {
         <SearchBar placeholder='Type Here...' lightTheme round />
         <Button
           onPress={this.onPressNew}
-          title="+"
-          color="blue"
-          accessibilityLabel="New Event"
+          style={styles.buttonStyle}
+          title='+'
+          color='grey'
+          accessibilityLabel='New Event'
         />
       </View>
     );
@@ -102,7 +103,7 @@ export default class Events extends React.Component {
 
   render() {
     return(
-      <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
+      <List containerStyle={styles.container}>
         <FlatList
           data={this.state.data}
           renderItem={({ item }) => (
@@ -124,3 +125,13 @@ export default class Events extends React.Component {
     );
   }
 }
+
+const styles = StyleSheet.create({
+  container: { 
+    borderTopWidth: 0, 
+    borderBottomWidth: 0 
+  },
+  buttonStyle: {
+    margin: 10
+  }
+});

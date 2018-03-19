@@ -83,13 +83,57 @@ export default class CreateEvent extends React.Component {
         <View style={styles.formRowStyle}>
           <Text
             style={styles.labelStyle}>
-          Activity Title:
+          Activity
           </Text>
-          <TextInput
-            style={styles.textInputStyle}
-            onChangeText={(text) => this.setState({activity: text})}
-            value={this.state.text}
-          />
+        </View>
+        <View style={styles.formRowStyle}>
+          <View style={styles.formColStyle}>
+            <View style={styles.formRowStyle}>
+              <View>
+                <Text
+                  style={styles.labelStyle}>
+                  Title:
+                </Text>
+              </View>
+              <View>
+                <TextInput
+                  style={styles.textInputStyle}
+                  onChangeText={(text) => this.setState({activity: text})}
+                  value={this.state.text}
+                />
+              </View>
+            </View>
+            <View style={styles.formRowStyle}>
+              <View>
+                <Text
+                  style={styles.labelStyle}>
+                  Description:
+                </Text>
+              </View>
+              <View>
+                <TextInput
+                  style={styles.textInputStyle}
+                  onChangeText={(text) => this.setState({activity: text})}
+                  value={this.state.text}
+                />
+              </View>
+            </View>
+            <View style={styles.formRowStyle}>
+              <View>
+                <Text
+                  style={styles.labelStyle}>
+                  Location:
+                </Text>
+              </View>
+              <View>
+                <TextInput
+                  style={styles.textInputStyle}
+                  onChangeText={(text) => this.setState({activity: text})}
+                  value={this.state.text}
+                />
+              </View>
+            </View>
+          </View>
         </View>
         <View style={styles.formRowStyle}>
           <View>
