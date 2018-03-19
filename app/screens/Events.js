@@ -1,10 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FlatList, ActivityIndicator, View } from 'react-native';
+import { Button, FlatList, ActivityIndicator, View } from 'react-native';
 import { List, ListItem, SearchBar } from 'react-native-elements';
+import dateformat from 'dateformat';
 import * as config from '../config/config';
 
-export default class Persons extends React.Component {
+export default class Events extends React.Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
@@ -27,7 +28,7 @@ export default class Persons extends React.Component {
   makeRemoteRequest = () => {
     this.setState({ loading: true });
 
-    fetch(config.personsUrl)
+    fetch(config.eventsUrl)
       .then(res => res.json())
       .then(res => {
         this.setState({
@@ -45,7 +46,11 @@ export default class Persons extends React.Component {
   }
 
   handleListItemPress = (item) => {
-    this.props.navigation.navigate('PersonDetails', { ...item });
+    this.props.navigation.navigate('EventDetails', { ...item });
+  }
+
+  onPressNew = () => {
+    this.props.navigation.navigate('CreateEvent');
   }
   
   renderSeparator = () =>  {
@@ -62,7 +67,17 @@ export default class Persons extends React.Component {
   }
 
   renderHeader = () => {
-    return <SearchBar placeholder='Type Here...' lightTheme round />;
+    return (
+      <View>  
+        <SearchBar placeholder='Type Here...' lightTheme round />
+        <Button
+          onPress={this.onPressNew}
+          title="+"
+          color="blue"
+          accessibilityLabel="New Event"
+        />
+      </View>
+    );
   }
 
   renderFooter = () => {
@@ -81,6 +96,10 @@ export default class Persons extends React.Component {
     );
   }
 
+  eventStartAndEnd = (event) => {
+    return `${dateformat(event.start, 'dd.mm HH:MM')} - ${dateformat(event.end, 'dd.mm HH:MM')}`;
+  } 
+
   render() {
     return(
       <List containerStyle={{ borderTopWidth: 0, borderBottomWidth: 0 }}>
@@ -89,9 +108,9 @@ export default class Persons extends React.Component {
           renderItem={({ item }) => (
             <ListItem
               roundAvatar
-              title={item.name}
-              subtitle={item.email}
-              avatar={{ uri: item.image }}
+              title={item.activity.name}
+              subtitle={this.eventStartAndEnd(item)}
+              avatar={{ uri: item.actor.image }}
               containerStyle={{ borderBottomWidth: 0 }}
               onPress={() => this.handleListItemPress(item)}
             />
