@@ -29,7 +29,7 @@ export default class LoginScreen extends React.Component {
 
         <Text
           style={styles.linky}
-          onPress={() => this.props.navigation.navigate('DrawerStack')} >
+          onPress={() => this.props.navigation.navigate('Drawer')} >
           Pretend we logged in
         </Text>
       </View>

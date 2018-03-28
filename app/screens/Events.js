@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, Button, FlatList, ActivityIndicator, View } from 'react-native';
-import { List, ListItem, SearchBar } from 'react-native-elements';
+import { StyleSheet, FlatList, ActivityIndicator, View } from 'react-native';
+import { List, ListItem } from 'react-native-elements';
+import ActionButton from 'react-native-action-button';
+//import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
 import dateformat from 'dateformat';
 import * as config from '../config/config';
 
-export default class Events extends React.Component {
+class Events extends React.Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
@@ -14,42 +17,16 @@ export default class Events extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = { 
-      loading: false,
-      data: [],
-      error: null
-    };
   }
 
   componentDidMount() {
-    this.makeRemoteRequest();
-  }
-
-  makeRemoteRequest = () => {
-    this.setState({ loading: true });
-
-    fetch(config.eventsUrl)
-      .then(res => res.json())
-      .then(res => {
-        this.setState({
-          loading: false,
-          data: res,
-          error: res.error,
-        });
-      })
-      .catch(error => {
-        this.setState({
-          error: error, 
-          loading: false 
-        });
-      });
   }
 
   handleListItemPress = (item) => {
     this.props.navigation.navigate('EventDetails', { ...item });
   }
 
-  onPressNew = () => {
+  onNewItemPressed = () => {
     this.props.navigation.navigate('CreateEvent');
   }
   
@@ -67,23 +44,11 @@ export default class Events extends React.Component {
   }
 
   renderHeader = () => {
-    return (
-      <View>  
-        <SearchBar placeholder='Type Here...' lightTheme round />
-        <Button
-          onPress={this.onPressNew}
-          style={styles.buttonStyle}
-          title='+'
-          color='grey'
-          accessibilityLabel='New Event'
-        />
-      </View>
-    );
+    return null;
   }
 
   renderFooter = () => {
-    if (!this.state.loading) return null;
-
+    if (!this.props.loading) return null;
     return (
       <View
         style={{
@@ -105,14 +70,14 @@ export default class Events extends React.Component {
     return(
       <List containerStyle={styles.container}>
         <FlatList
-          data={this.state.data}
+          data={this.props.events}
           renderItem={({ item }) => (
             <ListItem
               roundAvatar
               title={item.activity.name}
               subtitle={this.eventStartAndEnd(item)}
               avatar={{ uri: item.actor.image }}
-              containerStyle={{ borderBottomWidth: 0 }}
+              containerStyle={styles.listStyle}
               onPress={() => this.handleListItemPress(item)}
             />
           )}
@@ -121,17 +86,50 @@ export default class Events extends React.Component {
           ListHeaderComponent={this.renderHeader}
           ListFooterComponent={this.renderFooter}
         />
+        <ActionButton
+          buttonColor='#f78733'
+          onPress={this.onNewItemPressed}/>
       </List>
     );
   }
 }
 
+function mapStateToProps(state) {
+  return {
+    loading: state.events.loading,
+    events: state.events.data,
+    people: state.people.data
+  };
+}
+
+export default connect(mapStateToProps, null)(Events);
+
 const styles = StyleSheet.create({
   container: { 
     borderTopWidth: 0, 
-    borderBottomWidth: 0 
+    borderBottomWidth: 0,
+    height: '100%',
+    backgroundColor: '#4abdac'
+  },
+  listStyle: { 
+    borderTopWidth: 0, 
+    borderBottomWidth: 0,
+    backgroundColor: '#9ebfb7'
+  },
+  rowStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    width: '100%'
+  },
+  itemStyle: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   buttonStyle: {
+    width: 100,
+    paddingVertical: 5,
+    //paddingHorizontal: 5,
     margin: 10
   }
 });

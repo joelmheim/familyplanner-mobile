@@ -1,5 +1,6 @@
 import React from 'react';
-import { Text, Animated, Easing } from 'react-native';
+import { ScrollView, DrawerView, View, Text, Animated, Easing } from 'react-native';
+import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator } from 'react-navigation';
 
 import Persons from '../screens/Persons';
@@ -8,29 +9,32 @@ import PersonDetails from '../screens/PersonDetails';
 import Events from '../screens/Events';
 import EventDetails from '../screens/EventDetails';
 import CreateEvent from '../screens/CreateEvent';
-import Login from '../screens/Login';
-import Signup from '../screens/Signup';
-import ForgottenPassword from '../screens/ForgottenPassword';
+//import Login from '../screens/Login';
+//import Signup from '../screens/Signup';
+//import ForgottenPassword from '../screens/ForgottenPassword';
 import DrawerContainer from '../screens/Drawer';
+import * as css from './styles';
 
-const noTransitionConfig = () => ({
-  transitionSpec: {
-    duration: 0,
-    timing: Animated.timing,
-    easing: Easing.step0
-  }
-});
+// const noTransitionConfig = () => ({
+//   transitionSpec: {
+//     duration: 0,
+//     timing: Animated.timing,
+//     easing: Easing.step0
+//   }
+// });
 
 export const PersonStack = StackNavigator({
   Persons: {
     screen: Persons,
     navigationOptions: {
-      title: 'People',
+      headerStyle: { backgroundColor: '#4abdac' },
+      title: 'People'
     },
   },
   PersonDetails: {
     screen: PersonDetails,
     navigationOptions: ({ navigation }) => ({
+      headerStyle: { backgroundColor: '#4abdac' },
       title: navigation.state.params.name,
     }),
   },
@@ -40,28 +44,33 @@ export const EventStack = StackNavigator({
   Events: {
     screen: Events,
     navigationOptions: {
-      title: 'Events',
+      backgroundColor: '#4abdac',
+      headerStyle: { backgroundColor: '#4abdac' },
+      title: 'Events'
     },
   },
   EventDetails: {
     screen: EventDetails,
     navigationOptions: ({ navigation }) => ({
+      headerStyle: css.header.headerStyle,
       title: navigation.state.params.activity.name,
     }),
   },
   CreateEvent: {
     screen: CreateEvent,
-    navigationOptions: ({ navigation }) => ({
+    navigationOptions: {
+      headerStyle: css.header.headerStyle,
       title: 'New Event',
-    }),
-  }
+    },
+  },
 });
 
 export const SettingsStack = StackNavigator({
   Settings: {
     screen: Settings,
     navigationOptions: {
-      title: 'Settings',
+      headerStyle: css.header.headerStyle,
+      title: 'Settings'
     },
   },
 });
@@ -83,54 +92,82 @@ export const SettingsStack = StackNavigator({
 //   },
 // });
 
+const customComponent = (props) => (
+  <ScrollView
+    style={{
+      flex: 1,
+      backgroundColor: css.drawer.style.backgroundColor,
+    }}>
+    <DrawerView.Items {...props} />
+  </ScrollView>
+);
+
 // drawer stack
 export const DrawerStack = DrawerNavigator({
-  Events: { screen: EventStack },
-  Persons: { screen: PersonStack },
-  Settings: { screen: Settings },
+  Events: { 
+    screen: EventStack,
+    navigationOptions: {
+      drawerLabel: 'Events',
+      drawerIcon: ({tintColor}) => <Icon name='event' color={tintColor}/> 
+    }
+  },
+  Persons: { 
+    screen: PersonStack,
+    navigationOptions: {
+      drawerLabel: 'People',
+      drawerIcon: ({tintColor}) => <Icon name='account-circle' color={tintColor}/>
+    }
+  },
+  Settings: { 
+    screen: Settings,
+    navigationOptions: {
+      drawerLabel: 'Settings',
+      drawerIcon: ({tintColor}) => <Icon name='settings' color={tintColor}/>
+    }
+  },
 }, {
   gesturesEnabled: false,
-  contentComponent: (props) => <DrawerContainer {...props} />
+  contentComponent: DrawerContainer,
+  drawerPosition: 'left',
+  // styling for for DrawerView.Items in contentOptions
+  contentOptions: css.drawer
 });
 
-export const DrawerNavigation = StackNavigator({
-  DrawerStack: { screen: DrawerStack }
-}, {
-  headerMode: 'float',
-  navigationOptions: ({navigation}) => ({
-    headerStyle: {backgroundColor: 'green'},
-    title: 'Logged In to your app!',
-    gesturesEnabled: false,
-    headerLeft: <Text onPress={() => navigation.navigate('DrawerOpen')}>Menu</Text>
-  })
-});
+//export const DrawerNavigation = StackNavigator({
+//  Drawer: { screen: DrawerStack }
+//}, {
+//  headerMode: 'float',
+//  navigationOptions: ({navigation}) => ({
+//    headerStyle: {backgroundColor: 'green'},
+//    title: 'Logged In to your app!',
+//    gesturesEnabled: false,
+//    headerLeft: <Text onPress={() => navigation.navigate('DrawerOpen')}>Menu</Text>
+//  })
+//});
 
 // login stack
-const LoginStack = StackNavigator({
-  Login: { screen: Login },
-  Signup: { screen: Signup },
-  ForgottenPassword: { screen: ForgottenPassword, navigationOptions: { title: 'Forgot Password' } }
-}, {
-  headerMode: 'float',
-  navigationOptions: {
-    headerStyle: {backgroundColor: 'red'},
-    title: 'You are not logged in'
-  }
-});
+// export const LoginStack = StackNavigator({
+//   Login: { screen: Login },
+//   Signup: { screen: Signup },
+//   ForgottenPassword: { screen: ForgottenPassword, navigationOptions: { title: 'Forgot Password' } }
+// }, {
+//   headerMode: 'float',
+//   navigationOptions: {
+//     headerStyle: {backgroundColor: 'red'},
+//     title: 'You are not logged in'
+//   }
+// });
 
-export const Root = StackNavigator({
-  LoginStack: {
-    screen: LoginStack,
-  },
-  DrawerStack: {
-    screen: DrawerStack,
-  },
-  Settings: {
-    screen: SettingsStack,
-  },
-}, {
-  headerMode: 'none',
-  title: 'Main',
-  initialRouteName: 'LoginStack',
-  transitionConfig: noTransitionConfig
-});
+// export const Root = StackNavigator({
+// //  LoginRoute: {
+// //    screen: LoginStack,
+// //  },
+//   Drawer: {
+//     screen: DrawerStack,
+//   }
+// }, {
+//   headerMode: 'none',
+//   title: 'Main',
+// //  initialRouteName: 'LoginRoute',
+// //  transitionConfig: noTransitionConfig
+// });
