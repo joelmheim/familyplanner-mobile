@@ -1,9 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, ScrollView, TextInput, Text, DatePickerAndroid, TimePickerAndroid, TouchableNativeFeedback, View } from 'react-native';
+import { Picker, StyleSheet, ScrollView, TextInput, Text, DatePickerAndroid, TimePickerAndroid, TouchableNativeFeedback, View } from 'react-native';
+import {bindActionCreators} from 'redux';
+import { connect } from 'react-redux';
 import dateformat from 'dateformat';
 
-export default class CreateEvent extends React.Component {
+import * as Actions from '../actions';
+
+class CreateEvent extends React.Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
@@ -25,6 +29,12 @@ export default class CreateEvent extends React.Component {
       endDate: initialDate,
       helper: {}
     };   
+  }
+
+  componentDidMount() {
+    console.log('Create event. Props: ', this.props.people.map((person, index) => {
+      return (< Picker.Item label={person.name} value={person._id} key={index} />);
+    }));
   }
 
   formatDate(date) {
@@ -93,10 +103,23 @@ export default class CreateEvent extends React.Component {
   render() {
     return (
       <ScrollView style={styles.container}>
+        <View>
+          <Text
+            style={styles.labelStyle}>
+            Who?
+          </Text>
+          <Picker
+            mode='dropdown'
+            onValueChange={(itemValue, itemIndex) => this.setState({actor: this.props.people[itemIndex]})}>
+            {this.props.people.map((person, index) => {
+              return (< Picker.Item label={person.name} value={person._id} key={index} />);
+            })}   
+          </Picker>
+        </View>
         <View style={styles.formRowStyle}>
           <Text
             style={styles.labelStyle}>
-          Activity
+            Activity
           </Text>
         </View>
         <View style={styles.formRowStyle}>
@@ -181,6 +204,20 @@ export default class CreateEvent extends React.Component {
     );
   }
 }
+
+function mapStateToProps(state) {
+  return {
+    loading: state.people.loading,
+    people: state.people.data,
+    events: state.events.data
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(Actions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreateEvent);
 
 const styles = StyleSheet.create({
   container: {

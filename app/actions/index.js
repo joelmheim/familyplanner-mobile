@@ -7,7 +7,6 @@ import * as config from '../config/config';
 
 export function getPeople() {
   return (dispatch) => {
-    console.log('Fetching people.');
     fetch(config.personsUrl)
       .then(res => res.json())
       .then(res => {
@@ -21,7 +20,6 @@ export function getPeople() {
 
 export function getEvents() {
   return (dispatch) => {
-    console.log('Fetching events.');
     fetch(config.eventsUrl)
       .then(res => res.json())
       .then(res => {
