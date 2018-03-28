@@ -17,8 +17,9 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    Actions.getPeople();
-    Actions.getEvents();
+    console.log('Home component mounted.');
+    this.props.getPeople();
+    this.props.getEvents();
   } 
 
   render() {
@@ -34,20 +35,20 @@ class Home extends React.Component {
   }
 }
 
-//function mapStateToProps(state) {
-//  return {
-//    loading: state.people.loading,
-//    people: state.people.data,
-//    events: state.events.data
-//  };
-//}
+function mapStateToProps(state) {
+  return {
+    loading: state.people.loading,
+    people: state.people.data,
+    events: state.events.data
+  };
+}
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(Actions, dispatch);
 }
 
 //Connect everything
-export default connect(null, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
 //export default Home;
 
 const styles = StyleSheet.create({
