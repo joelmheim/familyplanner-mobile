@@ -4,6 +4,7 @@ import { Picker, StyleSheet, ScrollView, TextInput, Text, DatePickerAndroid, Tim
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import dateformat from 'dateformat';
+import * as css from '../config/styles';
 
 import * as Actions from '../actions';
 
@@ -32,9 +33,7 @@ class CreateEvent extends React.Component {
   }
 
   componentDidMount() {
-    console.log('Create event. Props: ', this.props.people.map((person, index) => {
-      return (< Picker.Item label={person.name} value={person._id} key={index} />);
-    }));
+    //this.setState({actor: this.props.people[-1]});
   }
 
   formatDate(date) {
@@ -109,7 +108,7 @@ class CreateEvent extends React.Component {
             Who?
           </Text>
           <Picker
-            mode='dropdown'
+            selectedValue={this.state.actor._id}
             onValueChange={(itemValue, itemIndex) => this.setState({actor: this.props.people[itemIndex]})}>
             {this.props.people.map((person, index) => {
               return (< Picker.Item label={person.name} value={person._id} key={index} />);
@@ -222,7 +221,6 @@ export default connect(mapStateToProps, mapDispatchToProps)(CreateEvent);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    //backgroundColor: 'white',
     paddingTop: 40,
     paddingHorizontal: 20,
     width: '100%'
@@ -250,9 +248,9 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: 'bold',
     //borderColor: 'grey',
-    borderWidth: 1,
-    backgroundColor: '#f78733',
-    borderRadius: 10,
+    //borderWidth: 1,
+    //backgroundColor: '#f78733',
+    //borderRadius: 10,
     alignItems: 'flex-end',
     
   },
@@ -262,12 +260,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 5,
     fontSize: 15,
-    color: 'white',
+    //color: 'white',
     fontWeight: 'bold',
-    borderColor: 'white',
-    borderWidth: 1,
-    backgroundColor: '#f78733',
-    borderRadius: 10,
+    //borderColor: 'white',
+    //borderWidth: 1,
+    //backgroundColor: '#f78733',
+    //borderRadius: 10,
     alignItems: 'flex-end',
     textAlign: 'center'
   },
