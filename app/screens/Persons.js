@@ -32,9 +32,9 @@ class Persons extends React.Component {
       <View
         style={{
           height: 1,
-          width: '86%',
-          backgroundColor: css.theme.colors.grey,
-          marginLeft: '14%'
+          width: '88%',
+          backgroundColor: css.colors.background_dark,
+          marginLeft: '12%'
         }}
       />
     );
@@ -52,7 +52,7 @@ class Persons extends React.Component {
         style={{
           paddingVertical: 20,
           borderTopWidth: 1,
-          borderColor: css.theme.colors.grey
+          borderColor: css.colors.background_light
         }}
       >
         <ActivityIndicator animating size='large' />
@@ -62,16 +62,17 @@ class Persons extends React.Component {
 
   render() {
     return(
-      <List containerStyle={styles.container}>
+      <List containerStyle={css.body.container}>
         <FlatList
-          data={this.props.data}
+          data={this.props.people}
           renderItem={({ item }) => (
             <ListItem
               roundAvatar
               title={item.name}
               subtitle={item.email}
               avatar={{ uri: item.image }}
-              containerStyle={styles.listStyle}
+              containerStyle={css.body.listStyle}
+              chevronColor={css.colors.text_medium}
               onPress={() => this.handleListItemPress(item)}
             />
           )}
@@ -88,7 +89,7 @@ class Persons extends React.Component {
 function mapStateToProps(state) {
   return {
     loading: state.people.loading,
-    data: state.people.data
+    people: state.people.data
   };
 }
 
@@ -97,27 +98,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Persons);
-
-const styles = StyleSheet.create({
-  container: { 
-    borderTopWidth: 0, 
-    borderBottomWidth: 0,
-    height: '100%',
-    backgroundColor: css.theme.colors.main
-  },
-  listStyle: { 
-    borderTopWidth: 0, 
-    borderBottomWidth: 0,
-    backgroundColor: css.theme.colors.accent
-  },
-  rowStyle: {
-    flex: 1,
-    flexDirection: 'row',
-    width: '100%'
-  },
-  itemStyle: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-});

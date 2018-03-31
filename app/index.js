@@ -4,6 +4,7 @@ import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import { DrawerStack } from './config/router';
 
+import * as css from './config/styles';
 import * as Actions from './actions';
 
 class Home extends React.Component {
@@ -24,7 +25,7 @@ class Home extends React.Component {
   render() {
     if (this.props.loading) {
       return (
-        <View style={styles.activityIndicatorContainer}>
+        <View style={css.global.activityIndicatorContainer}>
           <ActivityIndicator animating={true} size='large' />
         </View>
       );
@@ -48,29 +49,3 @@ function mapDispatchToProps(dispatch) {
 
 //Connect everything
 export default connect(mapStateToProps, mapDispatchToProps)(Home);
-//export default Home;
-
-const styles = StyleSheet.create({
-  activityIndicatorContainer:{
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    flex: 1,
-  },
-
-  row:{
-    borderBottomWidth: 1,
-    borderColor: '#ccc',
-    padding: 10
-  },
-
-  title:{
-    fontSize: 15,
-    fontWeight: '600'
-  },
-
-  description:{
-    marginTop: 5,
-    fontSize: 14,
-  }
-});

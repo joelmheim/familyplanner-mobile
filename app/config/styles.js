@@ -16,6 +16,7 @@ export const colors = {
   'background_light': '#d9e3f0',
   'button_bg': '#0693e3',
   'button_fg': '#d9e3f0',
+  'button_new': '#f78733',
   'text_light': '#d9d9d9',
   'text_medium': '#455a64',
   'text_dark': '#263238',
@@ -73,7 +74,7 @@ export const global = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#4abdac',
+    backgroundColor: colors.background_dark,
     paddingTop: 40,
     paddingHorizontal: 20
   },
@@ -93,8 +94,15 @@ export const global = StyleSheet.create({
   footerContainer: {
     margin: 10,
     backgroundColor: 'lightblue'
-  }
+  },
+  activityIndicatorContainer:{
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    flex: 1,
+  },
 });
+
 export const header = {
   // background
   headerStyle: {
@@ -136,6 +144,32 @@ export const body = {
   bodyStyle: {
     backgroundColor: colors.background_dark,
   },
+  container: { 
+    borderTopWidth: 0, 
+    borderBottomWidth: 0,
+    height: '100%',
+    backgroundColor: colors.background_dark
+  },
+  listStyle: { 
+    borderTopWidth: 0, 
+    borderBottomWidth: 0,
+    backgroundColor: colors.background_medium
+  },
+  rowStyle: {
+    flex: 1,
+    flexDirection: 'row',
+    width: '100%'
+  },
+  itemStyle: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonStyle: {
+    width: 100,
+    paddingVertical: 5,
+    margin: 10
+  }
 };
 
 export const drawer = {
@@ -171,3 +205,25 @@ export const drawer = {
     backgroundColor: colors.background_dark,
   },
 };
+
+
+// Unused styles below
+const styles = StyleSheet.create({
+
+  row:{
+    borderBottomWidth: 1,
+    borderColor: '#ccc',
+    padding: 10
+  },
+
+  title:{
+    fontSize: 15,
+    fontWeight: '600'
+  },
+
+  description:{
+    marginTop: 5,
+    fontSize: 14,
+  }
+});
+

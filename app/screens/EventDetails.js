@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ScrollView, TouchableNativeFeedback, ToastAndroid } from 'react-native';
+import { ScrollView, TouchableNativeFeedback, ToastAndroid, View } from 'react-native';
 import { Tile, List, ListItem, Icon } from 'react-native-elements';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';

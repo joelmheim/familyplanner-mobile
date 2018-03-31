@@ -2,8 +2,6 @@ export const PEOPLE_FETCHED   = 'PEOPLE_FETCHED';
 export const PEOPLE_FAILED    = 'PEOPLE_FAILED';
 export const EVENTS_FETCHED   = 'EVENTS_FETCHED';
 export const EVENTS_FAILED    = 'EVENTS_FAILED';
-export const NEWEVENT_CREATED = 'NEWEVENT_CREATED';
-export const NEWEVENT_FAILED  = 'NEWEVENT_FAILED';
 
 import * as config from '../config/config';
 

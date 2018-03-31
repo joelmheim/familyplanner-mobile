@@ -8,12 +8,17 @@ import { connect } from 'react-redux';
 import dateformat from 'dateformat';
 import * as config from '../config/config';
 import * as Actions from '../actions';
+import * as css from '../config/styles';
 
 class Events extends React.Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
     }).isRequired,
+    getEvents: PropTypes.func.isRequired,
+    loading: PropTypes.bool.isRequired,
+    events: PropTypes.shape.isRequired,
+    people: PropTypes.shape.isRequired
   }
 
   constructor(props) {
@@ -37,9 +42,9 @@ class Events extends React.Component {
       <View
         style={{
           height: 1,
-          width: '86%',
-          backgroundColor: '#CED0CE',
-          marginLeft: '14%'
+          width: '88%',
+          backgroundColor: css.colors.background_dark,
+          marginLeft: '12%'
         }}
       />
     );
@@ -56,7 +61,7 @@ class Events extends React.Component {
         style={{
           paddingVertical: 20,
           borderTopWidth: 1,
-          borderColor: '#CED0CE'
+          borderColor: css.colors.background_light
         }}
       >
         <ActivityIndicator animating size='large' />
@@ -70,7 +75,7 @@ class Events extends React.Component {
 
   render() {
     return(
-      <List containerStyle={styles.container}>
+      <List containerStyle={css.body.container}>
         <FlatList
           data={this.props.events}
           renderItem={({ item }) => (
@@ -79,7 +84,8 @@ class Events extends React.Component {
               title={item.activity.name}
               subtitle={this.eventStartAndEnd(item)}
               avatar={{ uri: item.actor.image }}
-              containerStyle={styles.listStyle}
+              containerStyle={css.body.listStyle}
+              chevronColor={css.colors.text_medium}
               onPress={() => this.handleListItemPress(item)}
             />
           )}
@@ -89,7 +95,7 @@ class Events extends React.Component {
           ListFooterComponent={this.renderFooter}
         />
         <ActionButton
-          buttonColor='#f78733'
+          buttonColor={css.colors.button_new}
           onPress={this.onNewItemPressed}/>
       </List>
     );
@@ -109,33 +115,3 @@ function mapDispatchToProps(dispatch) {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Events);
-
-const styles = StyleSheet.create({
-  container: { 
-    borderTopWidth: 0, 
-    borderBottomWidth: 0,
-    height: '100%',
-    backgroundColor: '#4abdac'
-  },
-  listStyle: { 
-    borderTopWidth: 0, 
-    borderBottomWidth: 0,
-    backgroundColor: '#9ebfb7'
-  },
-  rowStyle: {
-    flex: 1,
-    flexDirection: 'row',
-    width: '100%'
-  },
-  itemStyle: {
-    width: '100%',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  buttonStyle: {
-    width: 100,
-    paddingVertical: 5,
-    //paddingHorizontal: 5,
-    margin: 10
-  }
-});

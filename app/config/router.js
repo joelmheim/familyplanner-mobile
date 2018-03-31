@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, DrawerView, View, Text, Animated, Easing, Button } from 'react-native';
+//import { ScrollView, DrawerView, View, Text, Animated, Easing, Button } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator } from 'react-navigation';
 
@@ -27,14 +27,18 @@ export const PersonStack = StackNavigator({
   Persons: {
     screen: Persons,
     navigationOptions: {
-      headerStyle: { backgroundColor: '#4abdac' },
+      backgroundColor: css.body.bodyStyle,
+      headerStyle: css.header.headerStyle,
+      headerTintColor: css.header.headerTintColor,
       title: 'People'
     },
   },
   PersonDetails: {
     screen: PersonDetails,
     navigationOptions: ({ navigation }) => ({
-      headerStyle: { backgroundColor: '#4abdac' },
+      backgroundColor: css.body.bodyStyle,
+      headerStyle: css.header.headerStyle,
+      headerTintColor: css.header.headerTintColor,
       title: navigation.state.params.name,
     }),
   },
@@ -124,7 +128,6 @@ export const DrawerStack = DrawerNavigator({
   gesturesEnabled: false,
   contentComponent: DrawerContainer,
   drawerPosition: 'left',
-  // styling for for DrawerView.Items in contentOptions
   contentOptions: css.drawer
 });
 
