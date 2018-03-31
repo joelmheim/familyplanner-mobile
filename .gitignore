@@ -4,11 +4,11 @@
 .expo/
 
 # dependencies
-/node_modules
+node_modules/
 
 # build
-/android/.gradle
-/android/app/build
+android/.gradle/
+android/app/build/
 
 # misc
 .env.local
