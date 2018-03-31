@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, DrawerView, View, Text, Animated, Easing } from 'react-native';
+import { ScrollView, DrawerView, View, Text, Animated, Easing, Button } from 'react-native';
 import { Icon } from 'react-native-elements';
 import { StackNavigator, DrawerNavigator } from 'react-navigation';
 
@@ -44,22 +44,27 @@ export const EventStack = StackNavigator({
   Events: {
     screen: Events,
     navigationOptions: {
-      backgroundColor: '#4abdac',
-      headerStyle: { backgroundColor: '#4abdac' },
+      backgroundColor: css.body.bodyStyle,
+      headerStyle: css.header.headerStyle,
+      headerTintColor: css.header.headerTintColor,
       title: 'Events'
     },
   },
   EventDetails: {
     screen: EventDetails,
     navigationOptions: ({ navigation }) => ({
+      backgroundColor: css.body.bodyStyle,
       headerStyle: css.header.headerStyle,
+      headerTintColor: css.header.headerTintColor,
       title: navigation.state.params.activity.name,
     }),
   },
   CreateEvent: {
     screen: CreateEvent,
     navigationOptions: {
+      backgroundColor: css.body.bodyStyle,
       headerStyle: css.header.headerStyle,
+      headerTintColor: css.header.headerTintColor,
       title: 'New Event',
     },
   },
@@ -91,16 +96,6 @@ export const SettingsStack = StackNavigator({
 //     },
 //   },
 // });
-
-const customComponent = (props) => (
-  <ScrollView
-    style={{
-      flex: 1,
-      backgroundColor: css.drawer.style.backgroundColor,
-    }}>
-    <DrawerView.Items {...props} />
-  </ScrollView>
-);
 
 // drawer stack
 export const DrawerStack = DrawerNavigator({

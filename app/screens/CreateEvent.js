@@ -1,20 +1,46 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Picker, StyleSheet, ScrollView, TextInput, Text, DatePickerAndroid, TimePickerAndroid, TouchableNativeFeedback, View } from 'react-native';
+import { 
+  Picker, 
+  StyleSheet, 
+  ScrollView, 
+  TextInput, 
+  Text, 
+  DatePickerAndroid, 
+  TimePickerAndroid, 
+  TouchableNativeFeedback, 
+  View,
+  ToastAndroid } from 'react-native';
+import { Icon } from 'react-native-elements';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import dateformat from 'dateformat';
 import * as css from '../config/styles';
 
+//import { NEWEVENT_CREATED, NEWEVENT_FAILED } from '../actions';
 import * as Actions from '../actions';
+import * as config from '../config/config';
 
 class CreateEvent extends React.Component {
   static propTypes = {
     navigation: PropTypes.shape({
       navigate: PropTypes.func.isRequired,
+      setParams: PropTypes.func.isRequired,
     }).isRequired,
   }
-
+  
+  static navigationOptions = ({navigation}) => {
+    const {params} = navigation.state;
+    return {
+      headerRight: (
+        <TouchableNativeFeedback
+          onPress = {() => params.handleSave && params.handleSave()}>
+          <Icon name='done'/>
+        </TouchableNativeFeedback>
+      ) 
+    };
+  }
+  
   constructor(props) {
     super(props);
     let initialDate = new Date();
@@ -32,8 +58,48 @@ class CreateEvent extends React.Component {
     };   
   }
 
-  componentDidMount() {
-    //this.setState({actor: this.props.people[-1]});
+  componentDidMount () {
+    this.props.navigation.setParams({handleSave: () => this.saveEvent()});
+    this.setState({actor: this.props.people[0]});
+  }
+
+  saveEvent = () => {
+    console.log('Save state: ', this.state);
+    ToastAndroid.showWithGravity(`Saving event '${this.state.activity.name}'.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+    if (this.validateEvent()) {
+      this.submitEvent();
+    }
+    this.props.getEvents();
+  }
+
+  validateEvent() {
+    return this.state.activity.name;
+  }
+  
+  submitEvent() {
+    let event = {
+      activity: this.state.activity,
+      actor: this.state.actor,
+      start: this.state.startDate.toISOString(),
+      end: this.state.endDate.toISOString(),
+      helper: this.state.helper
+    };
+    fetch(config.eventsUrl, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(event),
+    })
+      .then(res => res.json())
+      .then(res => {
+        ToastAndroid.showWithGravity(res.message, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+        this.props.navigation.navigate('Events');
+      })
+      .catch(error => {
+        ToastAndroid.showWithGravity(error.message, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+      });
   }
 
   formatDate(date) {
@@ -46,7 +112,7 @@ class CreateEvent extends React.Component {
 
   showDatePicker = async (stateKey, options) => {
     try {
-      var newState = {};
+      let newState = {};
       const {action, year, month, day} = await DatePickerAndroid.open(options);
       if (action !== DatePickerAndroid.dismissedAction) {
         var date = new Date(year, month, day);
@@ -67,6 +133,15 @@ class CreateEvent extends React.Component {
       console.log(`Error in example '${stateKey}': `, message);
     }
   };
+
+  updatePerson(stateKey, person_id, index) {
+    let newState = {}; 
+    if (person_id != '-1' && index >= 0) {
+      if (stateKey === 'helper') { index -= 1; }
+      newState[stateKey] = this.props.people[index];
+      this.setState(newState);
+    }
+  }
 
   updateActivity(stateKey, text) {
     let activity = this.state.activity;
@@ -109,7 +184,7 @@ class CreateEvent extends React.Component {
           </Text>
           <Picker
             selectedValue={this.state.actor._id}
-            onValueChange={(itemValue, itemIndex) => this.setState({actor: this.props.people[itemIndex]})}>
+            onValueChange={(itemValue, itemIndex) => this.updatePerson('actor', itemValue, itemIndex)}>
             {this.props.people.map((person, index) => {
               return (< Picker.Item label={person.name} value={person._id} key={index} />);
             })}   
@@ -198,6 +273,20 @@ class CreateEvent extends React.Component {
               </View>
             </TouchableNativeFeedback>
           </View>
+        </View>
+        <View>
+          <Text
+            style={styles.labelStyle}>
+            Helper?
+          </Text>
+          <Picker
+            selectedValue={this.state.helper._id}
+            onValueChange={(itemValue, itemIndex) => this.updatePerson('helper', itemValue, itemIndex)}>
+            <Picker.Item label='None' value='0' key='-1' />
+            {this.props.people.map((person, index) => {
+              return (< Picker.Item label={person.name} value={person._id} key={index} />);
+            })}   
+          </Picker>
         </View>
       </ScrollView>
     );

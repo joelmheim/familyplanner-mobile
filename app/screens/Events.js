@@ -3,10 +3,11 @@ import PropTypes from 'prop-types';
 import { StyleSheet, FlatList, ActivityIndicator, View } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
-//import {bindActionCreators} from 'redux';
+import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import dateformat from 'dateformat';
 import * as config from '../config/config';
+import * as Actions from '../actions';
 
 class Events extends React.Component {
   static propTypes = {
@@ -20,6 +21,7 @@ class Events extends React.Component {
   }
 
   componentDidMount() {
+    this.props.getEvents();
   }
 
   handleListItemPress = (item) => {
@@ -102,7 +104,11 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(Events);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(Actions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Events);
 
 const styles = StyleSheet.create({
   container: { 

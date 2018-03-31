@@ -2,10 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { StyleSheet, FlatList, ActivityIndicator, View } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
-//import {bindActionCreators} from 'redux';
+import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 //import * as config from '../config/config';
 import * as css from '../config/styles';
+import * as Actions from '../actions';
 
 class Persons extends React.Component {
   static propTypes = {
@@ -19,6 +20,7 @@ class Persons extends React.Component {
   }
 
   componentDidMount() {
+    this.props.getPeople();
   }
 
   handleListItemPress = (item) => {
@@ -90,7 +92,11 @@ function mapStateToProps(state) {
   };
 }
 
-export default connect(mapStateToProps, null)(Persons);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(Actions, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Persons);
 
 const styles = StyleSheet.create({
   container: { 

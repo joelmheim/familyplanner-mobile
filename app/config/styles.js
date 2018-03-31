@@ -131,6 +131,13 @@ export const header = {
   }
 };
 
+export const body = {
+  // background
+  bodyStyle: {
+    backgroundColor: colors.background_dark,
+  },
+};
+
 export const drawer = {
   activeBackgroundColor: colors.background_medium,
   inactiveBackgroundColor: colors.background_dark,

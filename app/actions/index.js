@@ -1,7 +1,9 @@
-export const PEOPLE_FETCHED = 'PEOPLE_FETCHED';
-export const PEOPLE_FAILED  = 'PEOPLE_FAILED';
-export const EVENTS_FETCHED = 'EVENTS_FETCHED';
-export const EVENTS_FAILED  = 'EVENTS_FAILED';
+export const PEOPLE_FETCHED   = 'PEOPLE_FETCHED';
+export const PEOPLE_FAILED    = 'PEOPLE_FAILED';
+export const EVENTS_FETCHED   = 'EVENTS_FETCHED';
+export const EVENTS_FAILED    = 'EVENTS_FAILED';
+export const NEWEVENT_CREATED = 'NEWEVENT_CREATED';
+export const NEWEVENT_FAILED  = 'NEWEVENT_FAILED';
 
 import * as config from '../config/config';
 
@@ -18,10 +20,21 @@ export function getPeople() {
   };
 }
 
+const sortEvents = (one, other) => {
+  if (one.start === other.start) {
+    return 0;
+  } else if (one.start < other.start) {
+    return -1;
+  } else {
+    return 1;
+  }
+}
+
 export function getEvents() {
   return (dispatch) => {
     fetch(config.eventsUrl)
       .then(res => res.json())
+      .then(res => res.sort(sortEvents))
       .then(res => {
         dispatch({type: EVENTS_FETCHED, data:res});
       })
