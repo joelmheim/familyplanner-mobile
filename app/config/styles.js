@@ -172,6 +172,62 @@ export const body = {
   }
 };
 
+export const input = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingTop: 40,
+    paddingHorizontal: 20,
+    width: '100%'
+  },
+  labelStyle: {
+    fontSize: 15,
+    fontStyle: 'italic',
+    fontWeight: 'bold',
+    paddingTop: 10
+  },
+  textInputStyle: {
+    width: '100%',
+    margin: 10,
+    paddingHorizontal: 10,
+    borderColor: 'grey',
+    borderRadius: 10,
+    borderWidth: 0,
+    alignItems: 'flex-end',
+  },
+  dateInputStyle: {
+    width: 100,
+    margin: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    fontSize: 15,
+    fontWeight: 'bold',
+    alignItems: 'flex-end',
+    
+  },
+  timeInputStyle: {
+    width: 70,
+    margin: 10,
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    fontSize: 15,
+    fontWeight: 'bold',
+    alignItems: 'flex-end',
+    textAlign: 'center'
+  },
+  inputColStyle: {
+    flex: 2,
+    alignItems: 'flex-end'
+  },
+  labelColStyle: {
+    flex: 1,
+    alignItems: 'flex-start',
+  },
+  formRowStyle: { 
+    flex: 1, 
+    flexDirection: 'row' 
+  }
+});
+
 export const drawer = {
   activeBackgroundColor: colors.background_medium,
   inactiveBackgroundColor: colors.background_dark,

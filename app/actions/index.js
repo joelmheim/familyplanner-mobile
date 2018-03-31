@@ -18,17 +18,17 @@ export function getPeople() {
   };
 }
 
-const sortEvents = (one, other) => {
-  if (one.start === other.start) {
-    return 0;
-  } else if (one.start < other.start) {
-    return -1;
-  } else {
-    return 1;
-  }
-}
-
 export function getEvents() {
+  const sortEvents = (one, other) => {
+    if (one.start === other.start) {
+      return 0;
+    } else if (one.start < other.start) {
+      return -1;
+    } else {
+      return 1;
+    }
+  };
+  
   return (dispatch) => {
     fetch(config.eventsUrl)
       .then(res => res.json())

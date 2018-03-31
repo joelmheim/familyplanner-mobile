@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { StyleSheet, FlatList, ActivityIndicator, View } from 'react-native';
+import { FlatList, ActivityIndicator, View } from 'react-native';
 import { List, ListItem } from 'react-native-elements';
 import ActionButton from 'react-native-action-button';
 import {bindActionCreators} from 'redux';
@@ -17,8 +17,8 @@ class Events extends React.Component {
     }).isRequired,
     getEvents: PropTypes.func.isRequired,
     loading: PropTypes.bool.isRequired,
-    events: PropTypes.shape.isRequired,
-    people: PropTypes.shape.isRequired
+    events: PropTypes.array.isRequired,
+    people: PropTypes.array.isRequired
   }
 
   constructor(props) {
