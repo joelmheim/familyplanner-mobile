@@ -35,7 +35,11 @@ class CreateEvent extends React.Component {
       headerRight: (
         <TouchableNativeFeedback
           onPress = {() => params.handleSave && params.handleSave()}>
-          <Icon name='done'/>
+          <Icon 
+            name='done'
+            containerStyle={{paddingRight: 10}}
+            color={css.header.headerTintColor}
+          />
         </TouchableNativeFeedback>
       ) 
     };
@@ -63,8 +67,7 @@ class CreateEvent extends React.Component {
     this.setState({actor: this.props.people[0]});
   }
 
-  saveEvent = () => {
-    console.log('Save state: ', this.state);
+  saveEvent() {
     ToastAndroid.showWithGravity(`Saving event '${this.state.activity.name}'.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
     if (this.validateEvent()) {
       this.submitEvent();
