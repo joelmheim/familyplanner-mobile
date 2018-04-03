@@ -1,15 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { 
-  Picker, 
-  ScrollView, 
-  TextInput, 
-  Text, 
-  DatePickerAndroid, 
-  TimePickerAndroid, 
-  TouchableNativeFeedback, 
-  View,
-  ToastAndroid } from 'react-native';
+import { TouchableNativeFeedback, ToastAndroid } from 'react-native';
 import { Icon } from 'react-native-elements';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
@@ -47,7 +38,6 @@ class CreateEvent extends React.Component {
   
   constructor(props) {
     super(props);
-    console.log('CreateEvent constructor');
     this.state = { event: {} };
     let initialDate = new Date();
     initialDate.setHours(0,0,0);
@@ -62,26 +52,9 @@ class CreateEvent extends React.Component {
       event: event
     };
     this.updateEvent = this.updateEvent.bind(this);
-    console.log('CreateEvent state: ', this.state);
-  }
-
-  init(props) {
-    console.log('CreateEvent init');
-    let initialDate = new Date();
-    initialDate.setHours(0,0,0);
-    this.setState({
-      event: {
-        actor: {},
-        activity: {},
-        start: DateUtils.clone(initialDate),
-        end: DateUtils.clone(initialDate),
-        helper: {}
-      }
-    });   
   }
 
   componentDidMount () {
-    console.log('CreateEvent componentDidMount: ', this.state);
     this.props.navigation.setParams({handleSave: () => this.saveEvent()});
     let event = this.state.event;
     event['actor'] = this.props.people[0];
@@ -92,17 +65,17 @@ class CreateEvent extends React.Component {
     ToastAndroid.showWithGravity(`Saving event '${this.state.event.activity.name}'.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
     if (this.validateEvent()) {
       this.submitEvent();
+    } else {
+      ToastAndroid.showWithGravity('Validation error. Missing actor or activity name.', ToastAndroid.LONG, ToastAndroid.BOTTOM);
     }
     this.props.getEvents();
   }
 
   validateEvent() {
-    console.log('CreateEvent.validateEvent: ', this.state);
-    return this.state.event.activity.name;
+    return (this.state.event.actor._id && this.state.event.activity.name);
   }
   
   submitEvent() {
-    console.log('CreateEvent.submitEvent: ', this.state);
     let event = {
       activity: this.state.event.activity,
       actor: this.state.event.actor._id,
@@ -129,20 +102,16 @@ class CreateEvent extends React.Component {
   }
 
   updateEvent(eventPart) {
-    console.log('CreateEvent updateEvent: ', eventPart);
     let event = this.state.event;
     for (let key in eventPart) {
       if (eventPart.hasOwnProperty(key)) {
-        console.log('CreateEvent.updateEvent setting key ', key, eventPart[key]);
         event[key] = eventPart[key];
       }
     }
     this.setState({event: event});
-    console.log('CreateEvent resulting state: ', this.state);
   }
 
   render() {
-    console.log('CreateEvent.render: ', this.state);
     return (
       <EventForm people={this.props.people} event={this.state.event} onEventChange={this.updateEvent} />
     );

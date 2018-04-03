@@ -147,7 +147,7 @@ export const body = {
   container: { 
     borderTopWidth: 0, 
     borderBottomWidth: 0,
-    height: '100%',
+    height: '95%',
     backgroundColor: colors.background_dark
   },
   listStyle: { 

@@ -6,7 +6,6 @@ import ActionButton from 'react-native-action-button';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
 import dateformat from 'dateformat';
-import * as config from '../config/config';
 import * as Actions from '../actions';
 import * as css from '../config/styles';
 

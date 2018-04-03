@@ -10,10 +10,7 @@ import {
   TouchableNativeFeedback, 
   View,
   ToastAndroid } from 'react-native';
-import {bindActionCreators} from 'redux';
-import { connect } from 'react-redux';
 import * as css from '../config/styles';
-import * as Actions from '../actions';
 import * as DateUtils from '../tools/DateUtils';
 
 class EventForm extends React.Component {
@@ -24,14 +21,14 @@ class EventForm extends React.Component {
       actor: PropTypes.shape.isRequired,
       activity: PropTypes.shape.isRequired,
       start: PropTypes.objectOf(Date).isRequired,
-      end: PropTypes.objectOf(Date).isRequired
+      end: PropTypes.objectOf(Date).isRequired,
+      helper: PropTypes.objectOf(Object)
     }).isRequired,
     onEventChange: PropTypes.func.isRequired
   }
   
   constructor(props) {
     super(props);
-    console.log('EventForm constructor', this.props);
     this.state = {
       actor: props.event.actor,
       activity: props.event.activity,
@@ -46,7 +43,6 @@ class EventForm extends React.Component {
   }
 
   componentDidMount () {
-    console.log('EventForm componentDidMount', this.state);
   }
 
   showDatePicker = async (stateKey, options) => {
@@ -74,7 +70,7 @@ class EventForm extends React.Component {
           event['end'] = DateUtils.clone(date);
         }
       }
-      this.setState(newState);
+      //this.setState(newState);
       this.props.onEventChange(event);
     } catch ({code, message}) {
       ToastAndroid.showWithGravity(`Error: ${code}. Message: ${message}.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
@@ -89,15 +85,14 @@ class EventForm extends React.Component {
     } else {
       newState[stateKey] = {};
     }
-    this.setState(newState);
-    console.log('EventForm.updatePerson: ', newState);
+    //this.setState(newState);
     this.props.onEventChange(newState);
   }
 
   updateActivity(stateKey, text) {
     let activity = this.state.activity;
     activity[stateKey] = text;
-    this.setState({activity: activity});
+    //this.setState({activity: activity});
     this.props.onEventChange({activity: activity});
   }
 
@@ -124,7 +119,7 @@ class EventForm extends React.Component {
           event['end'] = DateUtils.clone(date);
         }
       }
-      this.setState(newState);
+      //this.setState(newState);
       this.props.onEventChange(event);
     } catch ({code, message}) {
       ToastAndroid.showWithGravity(`Error: ${code}. Message: ${message}.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
@@ -132,7 +127,6 @@ class EventForm extends React.Component {
   };
 
   render () {
-    console.log('EventForm.render: ', this.state);
     return (
       <ScrollView style={css.input.container}>
         <View>
@@ -145,7 +139,6 @@ class EventForm extends React.Component {
             onValueChange={(itemValue, itemIndex) => this.updatePerson('actor', itemValue, itemIndex)}>
             {this.props.people.map((person, index) => {
               return (< Picker.Item label={person.name} value={person._id} key={index} />);
-              //return (< Picker.Item label={person.name} value={index} key={index} />);
             })}   
           </Picker>
         </View>
@@ -169,7 +162,6 @@ class EventForm extends React.Component {
             <TextInput
               style={css.input.textInputStyle}
               onChangeText={(text) => this.updateActivity('description', text) }
-              //value={this.state.text}
               placeholder='Give the activity a description'
             />
           </View>
@@ -179,7 +171,6 @@ class EventForm extends React.Component {
             <TextInput
               style={css.input.textInputStyle}
               onChangeText={(text) => this.updateActivity('location', text) }
-              //value={this.state.text}
               placeholder='Where is the activity located?'
             />
           </View>
@@ -243,7 +234,6 @@ class EventForm extends React.Component {
             <Picker.Item label='None' value='0' key='-1' />
             {this.props.people.map((person, index) => {
               return (< Picker.Item label={person.name} value={person._id} key={index} />);
-              //return (< Picker.Item label={person.name} value={index} key={index} />);
             })}   
           </Picker>
         </View>
