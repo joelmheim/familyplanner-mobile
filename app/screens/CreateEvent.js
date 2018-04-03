@@ -13,11 +13,11 @@ import {
 import { Icon } from 'react-native-elements';
 import {bindActionCreators} from 'redux';
 import { connect } from 'react-redux';
-import dateformat from 'dateformat';
 import * as css from '../config/styles';
-
+import EventForm from './EventForm';
 import * as Actions from '../actions';
 import * as config from '../config/config';
+import * as DateUtils from '../tools/DateUtils';
 
 class CreateEvent extends React.Component {
   static propTypes = {
@@ -47,29 +47,49 @@ class CreateEvent extends React.Component {
   
   constructor(props) {
     super(props);
+    console.log('CreateEvent constructor');
+    this.state = { event: {} };
     let initialDate = new Date();
     initialDate.setHours(0,0,0);
-    this.state = {
+    let event = {
       actor: {},
       activity: {},
-      startDateText: this.formatDate(initialDate),
-      startTimeText: this.formatTime(initialDate),
-      startDate: initialDate,
-      endDateText: this.formatDate(initialDate),
-      endTimeText: this.formatTime(initialDate),
-      endDate: initialDate,
+      start: DateUtils.clone(initialDate),
+      end: DateUtils.clone(initialDate),
       helper: {}
-    };   
+    };
+    this.state = {
+      event: event
+    };
+    this.updateEvent = this.updateEvent.bind(this);
+    console.log('CreateEvent state: ', this.state);
+  }
+
+  init(props) {
+    console.log('CreateEvent init');
+    let initialDate = new Date();
+    initialDate.setHours(0,0,0);
+    this.setState({
+      event: {
+        actor: {},
+        activity: {},
+        start: DateUtils.clone(initialDate),
+        end: DateUtils.clone(initialDate),
+        helper: {}
+      }
+    });   
   }
 
   componentDidMount () {
+    console.log('CreateEvent componentDidMount: ', this.state);
     this.props.navigation.setParams({handleSave: () => this.saveEvent()});
-    this.setState({actor: this.props.people[0]});
-    console.log('After setState(\'ComponentDidMount\'): ', this.state);
+    let event = this.state.event;
+    event['actor'] = this.props.people[0];
+    this.setState({ event: event });
   }
 
   saveEvent() {
-    ToastAndroid.showWithGravity(`Saving event '${this.state.activity.name}'.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
+    ToastAndroid.showWithGravity(`Saving event '${this.state.event.activity.name}'.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
     if (this.validateEvent()) {
       this.submitEvent();
     }
@@ -77,18 +97,19 @@ class CreateEvent extends React.Component {
   }
 
   validateEvent() {
-    return this.state.activity.name;
+    console.log('CreateEvent.validateEvent: ', this.state);
+    return this.state.event.activity.name;
   }
   
   submitEvent() {
+    console.log('CreateEvent.submitEvent: ', this.state);
     let event = {
-      activity: this.state.activity,
-      actor: this.state.actor._id,
-      start: this.state.startDate.toISOString(),
-      end: this.state.endDate.toISOString(),
-      helper: (this.state.helper != {}) ? this.state.helper._id : null
+      activity: this.state.event.activity,
+      actor: this.state.event.actor._id,
+      start: this.state.event.start.toISOString(),
+      end: this.state.event.end.toISOString(),
+      helper: (this.state.event.helper != {}) ? this.state.event.helper._id : null
     };
-    console.log('Saving event: ', JSON.stringify(event) );
     fetch(config.eventsUrl, {
       method: 'POST',
       headers: {
@@ -107,201 +128,23 @@ class CreateEvent extends React.Component {
       });
   }
 
-  formatDate(date) {
-    return dateformat(date, 'dd.mm.yyyy');
-  }
-
-  formatTime(date) {
-    return dateformat(date, 'HH:MM');
-  }
-
-  clone(date) {
-    return new Date(date.getTime());
-  }
-
-  showDatePicker = async (stateKey, options) => {
-    try {
-      let newState = {};
-      const {action, year, month, day} = await DatePickerAndroid.open(options);
-      if (action !== DatePickerAndroid.dismissedAction) {
-        let date = this.clone(this.state[`${stateKey}Date`]);
-        date.setFullYear(year);
-        date.setMonth(month);
-        date.setDate(day);
-        if (stateKey === 'start') {
-          newState['startDateText'] = this.formatDate(date);
-          newState['startDate'] = this.clone(date);
-          if (this.state.startDate === this.state.endDate) {
-            newState['endDateText'] = this.formatDate(date);
-            newState['endDate'] = this.clone(date);
-          }
-        } else {
-          newState['endDateText'] = this.formatDate(date);
-          newState['endDate'] = this.clone(date);
-        }
+  updateEvent(eventPart) {
+    console.log('CreateEvent updateEvent: ', eventPart);
+    let event = this.state.event;
+    for (let key in eventPart) {
+      if (eventPart.hasOwnProperty(key)) {
+        console.log('CreateEvent.updateEvent setting key ', key, eventPart[key]);
+        event[key] = eventPart[key];
       }
-      this.setState(newState);
-    } catch ({code, message}) {
-      ToastAndroid.showWithGravity(`Error: ${code}. Message: ${message}.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
     }
-  };
-
-  updatePerson(stateKey, person_id, index) {
-    let newState = {}; 
-    if (stateKey === 'helper') { index -= 1; }
-    if (person_id != '-1' && index >= 0) {
-      newState[stateKey] = this.props.people[index];
-    } else {
-      newState[stateKey] = {};
-    }
-    this.setState(newState);
+    this.setState({event: event});
+    console.log('CreateEvent resulting state: ', this.state);
   }
-
-  updateActivity(stateKey, text) {
-    let activity = this.state.activity;
-    activity[stateKey] = text;
-    this.setState({activity: activity});
-  }
-
-  showTimePicker = async (stateKey, options) => {
-    try {
-      let newState = {};
-      const {action, hour, minute} = await TimePickerAndroid.open(options);
-      if (action !== TimePickerAndroid.dismissedAction) {
-        let date = this.clone(this.state[`${stateKey}Date`]);
-        date.setHours(hour, minute, 0, 0);
-        if (stateKey == 'start') {
-          newState['startTimeText'] = this.formatTime(date);
-          newState['startDate'] = this.clone(date);
-          if (this.state.startDate === this.state.endDate) {
-            newState['endTimeText'] = this.formatTime(date);
-            newState['endDate'] = this.clone(date);
-          } 
-        } else {
-          newState['endTimeText'] = this.formatTime(date);
-          newState['endDate'] = this.clone(date);
-        }
-      }
-      this.setState(newState);
-    } catch ({code, message}) {
-      ToastAndroid.showWithGravity(`Error: ${code}. Message: ${message}.`, ToastAndroid.LONG, ToastAndroid.BOTTOM);
-    }
-  };
 
   render() {
+    console.log('CreateEvent.render: ', this.state);
     return (
-      <ScrollView style={css.input.container}>
-        <View>
-          <Text
-            style={css.input.labelStyle}>
-            Who?
-          </Text>
-          <Picker
-            selectedValue={this.state.actor._id}
-            onValueChange={(itemValue, itemIndex) => this.updatePerson('actor', itemValue, itemIndex)}>
-            {this.props.people.map((person, index) => {
-              return (< Picker.Item label={person.name} value={person._id} key={index} />);
-            })}   
-          </Picker>
-        </View>
-        <View style={css.input.formRowStyle}>
-          <Text
-            style={css.input.labelStyle}>
-            Activity
-          </Text>
-        </View>
-        <View style={css.input.formRowStyle}>
-          <View style={css.input.inputColStyle}>
-            <TextInput
-              style={css.input.textInputStyle}
-              onChangeText={(text) => this.updateActivity('name', text) }
-              placeholder='Give the activity a descriptive name' 
-            />
-          </View>
-        </View>
-        <View style={css.input.formRowStyle}>
-          <View style={css.input.inputColStyle}>
-            <TextInput
-              style={css.input.textInputStyle}
-              onChangeText={(text) => this.updateActivity('description', text) }
-              //value={this.state.text}
-              placeholder='Give the activity a description'
-            />
-          </View>
-        </View>
-        <View style={css.input.formRowStyle}>
-          <View style={css.input.inputColStyle}>
-            <TextInput
-              style={css.input.textInputStyle}
-              onChangeText={(text) => this.updateActivity('location', text) }
-              //value={this.state.text}
-              placeholder='Where is the activity located?'
-            />
-          </View>
-        </View>
-        <View style={css.input.formRowStyle}>
-          <View style={css.input.labelColStyle}>
-            <Text
-              style={css.input.labelStyle}>
-              Start:
-            </Text>
-          </View>
-          <View style={css.input.inputColStyle}>
-            <TouchableNativeFeedback
-              onPress={this.showDatePicker.bind(this, 'start', {date: this.state.startDate, mode: 'default'})}>
-              <View>
-                <Text style={css.input.dateInputStyle}>{this.state.startDateText}</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-          <View style={css.input.inputColStyle}>
-            <TouchableNativeFeedback
-              onPress={this.showTimePicker.bind(this, 'start', {hour: 0, minute: 0, mode: 'default'})}>
-              <View>
-                <Text style={css.input.dateInputStyle}>{this.state.startTimeText}</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-        </View>
-        <View style={css.input.formRowStyle}>
-          <View style={css.input.labelColStyle}>
-            <Text
-              style={css.input.labelStyle}>
-              End:
-            </Text>
-          </View>
-          <View style={css.input.inputColStyle}>
-            <TouchableNativeFeedback
-              onPress={this.showDatePicker.bind(this, 'end', {date: this.state.endDate, mode: 'default'})}>
-              <View>
-                <Text style={css.input.dateInputStyle}>{this.state.endDateText}</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-          <View style={css.input.inputColStyle}>
-            <TouchableNativeFeedback
-              onPress={this.showTimePicker.bind(this, 'end', {hour: 0, minute: 0, mode: 'default'})}>
-              <View>
-                <Text style={css.input.dateInputStyle}>{this.state.endTimeText}</Text>
-              </View>
-            </TouchableNativeFeedback>
-          </View>
-        </View>
-        <View>
-          <Text
-            style={css.input.labelStyle}>
-            Helper?
-          </Text>
-          <Picker
-            selectedValue={this.state.helper._id}
-            onValueChange={(itemValue, itemIndex) => this.updatePerson('helper', itemValue, itemIndex)}>
-            <Picker.Item label='None' value='0' key='-1' />
-            {this.props.people.map((person, index) => {
-              return (< Picker.Item label={person.name} value={person._id} key={index} />);
-            })}   
-          </Picker>
-        </View>
-      </ScrollView>
+      <EventForm people={this.props.people} event={this.state.event} onEventChange={this.updateEvent} />
     );
   }
 }
